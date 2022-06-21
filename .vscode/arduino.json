@@ -1,7 +1,0 @@
-{
-    "configuration": "cpu=atmega328old",
-    "board": "arduino:avr:nano",
-    "sketch": "electric_car\\test_arduino\\test_arduino.ino",
-    "output": "./build",
-    "programmer": "arduino:avrisp"
-}

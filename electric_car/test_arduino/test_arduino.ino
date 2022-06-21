@@ -31,6 +31,7 @@ public:
         return sig == HIGH;
     }
 };
+
 class Motor
 {
 private:
