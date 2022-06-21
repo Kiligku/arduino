@@ -123,7 +123,7 @@ void loop()
     if (!start)
     {
         start = echo.Tick();
-        delay(50);
+        delay(50); // 控制超声波发射频率
     }
     else
     {
@@ -136,7 +136,9 @@ void loop()
         else // 执行停止逻辑
         {
             motor.backward(500); // 反转500ms以达到刹车的效果
-            return;              // 小车停止运动
+            //return;              // 小车停止运动
+            start = false; // 让小车可以再次启动
+            stop = false;
         }
     }
 }
