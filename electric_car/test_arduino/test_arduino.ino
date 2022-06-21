@@ -1,6 +1,4 @@
-#include <Arduino.h>
-#line 1 "d:\\Cprojects\\ard\\test_arduino.ino"
-#define TrgPin A0
+#define TrigPin A0
 #define EcoPin A1
 class LED
 {
@@ -33,12 +31,11 @@ public:
         return sig == HIGH;
     }
 };
-
 class Motor
 {
 private:
-    int IN1 = 5; // 298的控制引脚
-    int IN2 = 6;
+    int IN1 = A5; // 298的控制引脚
+    int IN2 = A6;
     int speed = 200;
 
 public:
@@ -99,7 +96,9 @@ private:
     }
     bool CanRun()
     {
-        float dis = pulseIn(EcoPin, HIGH);
+        float time_ = pulseIn(EcoPin, HIGH);
+        float dis = time_ / 58;
+        Serial.println(dis);
         if (dis < m_MinDis)
         {
             return true;
@@ -113,11 +112,6 @@ Echo echo;
 ultraRed ur;
 bool start = false;
 bool stop = false;
-#line 114 "d:\\Cprojects\\ard\\test_arduino.ino"
-void setup();
-#line 119 "d:\\Cprojects\\ard\\test_arduino.ino"
-void loop();
-#line 114 "d:\\Cprojects\\ard\\test_arduino.ino"
 void setup()
 {
     Serial.begin(9600);
@@ -128,6 +122,7 @@ void loop()
     if (!start)
     {
         start = echo.Tick();
+        delay(50);
     }
     else
     {

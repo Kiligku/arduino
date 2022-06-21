@@ -1,6 +1,8 @@
 {
     "C_Cpp.intelliSenseEngine": "Tag Parser",
-    "editor.insertSpaces": true,
+    "C_Cpp.intelliSenseEngineFallback": "Disabled",
     "files.autoGuessEncoding": true,
     "editor.detectIndentation": false,
+    "editor.insertSpaces": true,
+    "files.encoding": "utf8"
 }

@@ -1,18 +1,17 @@
-#include <Arduino.h>
-#line 1 "d:\\Cprojects\\ard\\test_arduino.ino"
-#define TrgPin A0
-#define EcoPin A1
+# 1 "d:\\Cprojects\\arduino\\electric_car\\test_arduino\\test_arduino.ino"
+
+
 class LED
 {
 public:
     void ledHigh()
     {
-        digitalWrite(LED_BUILTIN, HIGH);
+        digitalWrite(13, 0x1);
         delay(2000);
     }
     void ledLow()
     {
-        digitalWrite(LED_BUILTIN, LOW);
+        digitalWrite(13, 0x0);
         delay(2000);
     }
 };
@@ -25,27 +24,26 @@ public:
     // 假设检测到终点是高电平
     ultraRed()
     {
-        pinMode(OUT, INPUT);
+        pinMode(OUT, 0x0);
     }
     bool hasReachedFinal()
     {
         int sig = digitalRead(OUT);
-        return sig == HIGH;
+        return sig == 0x1;
     }
 };
-
 class Motor
 {
 private:
-    int IN1 = 5; // 298的控制引脚
-    int IN2 = 6;
+    int IN1 = A5; // 298的控制引脚
+    int IN2 = A6;
     int speed = 200;
 
 public:
     Motor()
     {
-        pinMode(IN1, OUTPUT);
-        pinMode(IN2, OUTPUT);
+        pinMode(IN1, 0x1);
+        pinMode(IN2, 0x1);
     }
     void setSpeed(int speed)
     {
@@ -54,19 +52,19 @@ public:
     void forward(int t) // t的单位为毫秒
     {
         analogWrite(IN1, speed);
-        digitalWrite(IN2, LOW);
+        digitalWrite(IN2, 0x0);
         delay(t);
     }
     void backward(int t)
     {
-        digitalWrite(IN1, LOW);
+        digitalWrite(IN1, 0x0);
         analogWrite(IN2, speed);
         delay(t);
     }
     void stop(int t)
     {
-        digitalWrite(IN1, LOW);
-        digitalWrite(IN2, LOW);
+        digitalWrite(IN1, 0x0);
+        digitalWrite(IN2, 0x0);
         delay(t);
     }
 };
@@ -79,9 +77,9 @@ private:
 public:
     Echo()
     {
-        pinMode(TrigPin, OUTPUT);
-        pinMode(EcoPin, INPUT);
-        digitalWrite(TrigPin, LOW);
+        pinMode(A0, 0x1);
+        pinMode(A1, 0x0);
+        digitalWrite(A0, 0x0);
     }
     bool Tick()
     {
@@ -92,14 +90,16 @@ public:
 private:
     void send()
     {
-        digitalWrite(TrigPin, HIGH);
+        digitalWrite(A0, 0x1);
         // 维持10毫秒高电平用来产生一个脉冲
         delayMicroseconds(10);
-        digitalWrite(TrigPin, LOW);
+        digitalWrite(A0, 0x0);
     }
     bool CanRun()
     {
-        float dis = pulseIn(EcoPin, HIGH);
+        float time_ = pulseIn(A1, 0x1);
+        float dis = time_ / 58;
+        Serial.println(dis);
         if (dis < m_MinDis)
         {
             return true;
@@ -113,11 +113,6 @@ Echo echo;
 ultraRed ur;
 bool start = false;
 bool stop = false;
-#line 114 "d:\\Cprojects\\ard\\test_arduino.ino"
-void setup();
-#line 119 "d:\\Cprojects\\ard\\test_arduino.ino"
-void loop();
-#line 114 "d:\\Cprojects\\ard\\test_arduino.ino"
 void setup()
 {
     Serial.begin(9600);
@@ -128,6 +123,7 @@ void loop()
     if (!start)
     {
         start = echo.Tick();
+        delay(50);
     }
     else
     {
@@ -140,7 +136,7 @@ void loop()
         else // 执行停止逻辑
         {
             motor.backward(500); // 反转500ms以达到刹车的效果
-            return;              // 小车停止运动
+            return; // 小车停止运动
         }
     }
 }

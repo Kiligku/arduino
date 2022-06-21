@@ -1,4 +1,6 @@
-#define TrgPin A0
+#include <Arduino.h>
+#line 1 "d:\\Cprojects\\arduino\\electric_car\\test_arduino\\test_arduino.ino"
+#define TrigPin A0
 #define EcoPin A1
 class LED
 {
@@ -31,12 +33,11 @@ public:
         return sig == HIGH;
     }
 };
-
 class Motor
 {
 private:
-    int IN1 = 5; // 298的控制引脚
-    int IN2 = 6;
+    int IN1 = A5; // 298的控制引脚
+    int IN2 = A6;
     int speed = 200;
 
 public:
@@ -77,9 +78,9 @@ private:
 public:
     Echo()
     {
-        pinMode(TrgPin, OUTPUT);
+        pinMode(TrigPin, OUTPUT);
         pinMode(EcoPin, INPUT);
-        digitalWrite(TrgPin, LOW);
+        digitalWrite(TrigPin, LOW);
     }
     bool Tick()
     {
@@ -90,14 +91,16 @@ public:
 private:
     void send()
     {
-        digitalWrite(TrgPin, HIGH);
+        digitalWrite(TrigPin, HIGH);
         // 维持10毫秒高电平用来产生一个脉冲
         delayMicroseconds(10);
-        digitalWrite(TrgPin, LOW);
+        digitalWrite(TrigPin, LOW);
     }
     bool CanRun()
     {
-        float dis = pulseIn(EcoPin, HIGH);
+        float time_ = pulseIn(EcoPin, HIGH);
+        float dis = time_ / 58;
+        Serial.println(dis);
         if (dis < m_MinDis)
         {
             return true;
@@ -111,6 +114,11 @@ Echo echo;
 ultraRed ur;
 bool start = false;
 bool stop = false;
+#line 115 "d:\\Cprojects\\arduino\\electric_car\\test_arduino\\test_arduino.ino"
+void setup();
+#line 120 "d:\\Cprojects\\arduino\\electric_car\\test_arduino\\test_arduino.ino"
+void loop();
+#line 115 "d:\\Cprojects\\arduino\\electric_car\\test_arduino\\test_arduino.ino"
 void setup()
 {
     Serial.begin(9600);
@@ -121,6 +129,7 @@ void loop()
     if (!start)
     {
         start = echo.Tick();
+        delay(50);
     }
     else
     {
@@ -137,3 +146,4 @@ void loop()
         }
     }
 }
+
